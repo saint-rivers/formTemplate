@@ -8,51 +8,33 @@ import java.util.*;
 
 public class Multithreaded extends JFrame {
 
-    JPanel masterPanel;
-    FormPanel formPanel;
-    ButtonPanel buttonPanel;
-
-    public Multithreaded(){
+    public JPanel masterPanel;
+    public Multithreaded(String name){
 
         String[] fieldNames = {"Enter n","Factorial","Sequence"};
         String[] buttonNames = {"Calculate","Exit"};
-        masterPanel = new JPanel();
 
         ArrayList<JPanel> panelsInOrder = new ArrayList<>();
-        formPanel = new FormPanel(fieldNames);
-        buttonPanel = new ButtonPanel(buttonNames);
-        panelsInOrder.add(formPanel);
-        panelsInOrder.add(buttonPanel);
+        panelsInOrder.add(new FormPanel(fieldNames));
+        panelsInOrder.add(new ButtonPanel(buttonNames));
 
-        //masterPanel = loadMasterPanel(panelsInOrder);
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(2,1));
-        for (JPanel p: panelsInOrder){
-            panel.add(p);
-        }
-        panel.setBorder(new EmptyBorder(10,10,10,10));
-
-        this.add(panel);
-        //this.add(masterPanel);
-        loadFrame("Multithreaded");
+        masterPanel = new JPanel();
+        masterPanel = loadMasterPanel(panelsInOrder);
+        this.add(masterPanel);
+        initializeFrame(name);
     }
 
     JPanel loadMasterPanel(ArrayList<JPanel> panelList){
 
-        JPanel panel = new JPanel();
-        this.setLayout(new GridLayout(3,1));
-
+        masterPanel.setLayout(new GridLayout(2,1));
+        masterPanel.setBorder(new EmptyBorder(10,10,10,10));
         for (JPanel p: panelList){
-            panel.add(p);
+            masterPanel.add(p);
         }
-
-
-        //panel.add(panelList.get(0));
-        //panel.add(panelList.get(1));
-        return panel;
+        return masterPanel;
     }
 
-    void loadFrame(String name){
+    void initializeFrame(String name){
 
         this.setTitle(name);
         this.setSize(400,300);
@@ -66,7 +48,7 @@ public class Multithreaded extends JFrame {
         Counters.FactorialCounter factorial = new Counters.FactorialCounter(n);
         Counters.SumOfSequence sequence = new Counters.SumOfSequence(n);
 
-        Multithreaded multithreaded = new Multithreaded();
+        Multithreaded multithreaded = new Multithreaded("default name");
 
         new Thread(factorial).start();
         new Thread(sequence).start();
@@ -100,13 +82,11 @@ class ButtonPanel extends JPanel{
 
     public ButtonPanel(String[] buttonNames){
 
-        this.setBackground(Color.orange);
-        this.setLayout(new GridLayout(1, buttonNames.length));
+        this.setLayout(new GridLayout(1, buttonNames.length,20,20));
+        this.setBorder(new EmptyBorder(30,10,30,10));
 
         for(int i = 0; i < buttonNames.length; i++){
             JButton button = new JButton(buttonNames[i]);
-            button.setMargin(new Insets(10,10,10,10));
-
             buttonsMap.put(buttonNames[i], button);
             this.add(buttonsMap.get(buttonNames[i]));
             System.out.println(buttonNames[i] + " added.");
