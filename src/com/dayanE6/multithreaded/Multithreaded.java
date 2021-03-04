@@ -1,28 +1,61 @@
 package com.dayanE6.multithreaded;
 
-/*
-1. find the factorial of n
-2. find the sum of 1 to n
- */
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.*;
 
 
 public class Multithreaded extends JFrame {
 
-    MasterPanel panel;
+    JPanel masterPanel;
+    FormPanel formPanel;
+    ButtonPanel buttonPanel;
 
     public Multithreaded(){
 
-        panel = new MasterPanel();
+        String[] fieldNames = {"Enter n","Factorial","Sequence"};
+        String[] buttonNames = {"Calculate","Exit"};
+        masterPanel = new JPanel();
 
-        panel.setLayout(new GridLayout(5,2));
-        this.setTitle("Multithreaded");
-        this.setSize(400,300);
+        ArrayList<JPanel> panelsInOrder = new ArrayList<>();
+        formPanel = new FormPanel(fieldNames);
+        buttonPanel = new ButtonPanel(buttonNames);
+        panelsInOrder.add(formPanel);
+        panelsInOrder.add(buttonPanel);
+
+        //masterPanel = loadMasterPanel(panelsInOrder);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(2,1));
+        for (JPanel p: panelsInOrder){
+            panel.add(p);
+        }
+        panel.setBorder(new EmptyBorder(10,10,10,10));
 
         this.add(panel);
+        //this.add(masterPanel);
+        loadFrame("Multithreaded");
+    }
+
+    JPanel loadMasterPanel(ArrayList<JPanel> panelList){
+
+        JPanel panel = new JPanel();
+        this.setLayout(new GridLayout(3,1));
+
+        for (JPanel p: panelList){
+            panel.add(p);
+        }
+
+
+        //panel.add(panelList.get(0));
+        //panel.add(panelList.get(1));
+        return panel;
+    }
+
+    void loadFrame(String name){
+
+        this.setTitle(name);
+        this.setSize(400,300);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
@@ -40,26 +73,43 @@ public class Multithreaded extends JFrame {
     }
 }
 
-class MasterPanel extends JPanel{
+class FormPanel extends JPanel{
 
-    private final JTextField inputTxt = new JTextField();
-    private final JTextField factorialTxt = new JTextField();
-    private final JTextField sequenceTxt = new JTextField();
-    private final JButton calculateBtn = new JButton("Calculate");
+    public Map<String, JTextField> fieldNameDictionary = new HashMap<>();
 
-    MasterPanel(){
+    public FormPanel(String[] textFieldNames){
 
-        factorialTxt.setEditable(false);
-        sequenceTxt.setEditable(false);
-
-        this.add(new JLabel("Enter n: "));
-        this.add(inputTxt);
-        this.add(new JLabel("Factorial: "));
-        this.add(factorialTxt);
-        this.add(new JLabel("Sum of sequence: "));
-        this.add(sequenceTxt);
-
-        this.add(calculateBtn);
+        this.setLayout(new GridLayout(textFieldNames.length, 2, 5, 5));
+        addLabelsAndFields(textFieldNames);
         this.setBorder(new EmptyBorder(10,10,10,10));
+    }
+
+    void addLabelsAndFields(String[] textFieldNames){
+        for(int i = 0; i < textFieldNames.length; i++){
+
+            fieldNameDictionary.put(textFieldNames[i], new JTextField()); // add name and text field to map
+            this.add(new JLabel(textFieldNames[i])); // add name as label to form
+            this.add(fieldNameDictionary.get(textFieldNames[i])); // add text field to form
+        }
+    }
+}
+
+class ButtonPanel extends JPanel{
+
+    public Map<String, JButton> buttonsMap = new HashMap<>();
+
+    public ButtonPanel(String[] buttonNames){
+
+        this.setBackground(Color.orange);
+        this.setLayout(new GridLayout(1, buttonNames.length));
+
+        for(int i = 0; i < buttonNames.length; i++){
+            JButton button = new JButton(buttonNames[i]);
+            button.setMargin(new Insets(10,10,10,10));
+
+            buttonsMap.put(buttonNames[i], button);
+            this.add(buttonsMap.get(buttonNames[i]));
+            System.out.println(buttonNames[i] + " added.");
+        }
     }
 }
